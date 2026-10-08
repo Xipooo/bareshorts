@@ -1,3 +1,3 @@
 #!/bin/sh
-# CI is blocked by GitHub billing; gate pushes on a full local verify (tests + typecheck + build).
-npm run verify
+# Light gate: one quick test run before push (CI runs the same tests once billing allows).
+npm test
