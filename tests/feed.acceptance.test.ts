@@ -111,3 +111,13 @@ describe('feed - Exceptions', () => {
     expect(root.textContent).not.toMatch(GARBAGE)
   })
 })
+
+describe('feed - first run', () => {
+  it('tells the user how to reach the hidden menu when there is nothing to play', async () => {
+    // Given no Shorts (e.g. no API key yet)
+    // When the app boots
+    await boot([])
+    // Then the status explains the long-press / edge-swipe menu
+    expect(root.textContent).toContain('Long-press')
+  })
+})

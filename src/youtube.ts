@@ -2,7 +2,7 @@ import type { Short, ShortsProvider, SourceSpec } from './types'
 import { QuotaError } from './types'
 import { isShort, parseIsoDuration } from './isShort'
 
-export interface YouTubeOptions { apiKey: string; fetch: typeof fetch; storage: Storage; now: () => number }
+export interface YouTubeOptions { apiKey: string | (() => string); fetch: typeof fetch; storage: Storage; now: () => number }
 
 const BASE = 'https://www.googleapis.com/youtube/v3'
 const BATCH = 50
@@ -15,7 +15,8 @@ export class ApiError extends Error {}
 
 export function createYouTubeProvider(o: YouTubeOptions): ShortsProvider {
   async function call(path: string, params: Record<string, string>, ttl: number): Promise<any> {
-    if (!o.apiKey) throw new ApiError('No API key configured. Add your YouTube Data API key in Settings.')
+    const apiKey = typeof o.apiKey === "function" ? o.apiKey() : o.apiKey
+    if (!apiKey) throw new ApiError('No API key configured. Add your YouTube Data API key in Settings.')
     // the cache key deliberately excludes the API key so secrets never reach storage
     const cacheKey = `bs:cache:${path}?${new URLSearchParams(Object.entries(params).sort()).toString()}`
     try {
@@ -24,7 +25,7 @@ export function createYouTubeProvider(o: YouTubeOptions): ShortsProvider {
     } catch { /* corrupt cache entry: refetch */ }
     const url = new URL(`${BASE}/${path}`)
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
-    url.searchParams.set('key', o.apiKey)
+    url.searchParams.set("key", apiKey)
     const res = await o.fetch(url.toString())
     if (!res.ok) throw await toError(res)
     const body = await res.json()

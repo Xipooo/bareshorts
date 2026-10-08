@@ -186,3 +186,18 @@ describe('YouTube provider - errors', () => {
     expect(mock).not.toHaveBeenCalled()
   })
 })
+
+describe('YouTube provider - lazy key', () => {
+  it('reads the API key at call time, so a key saved in Settings after boot works', async () => {
+    // Given a provider created before any key exists
+    let key = ''
+    const f = fakeFetch(url => url.pathname.endsWith('/search') ? { body: searchItems('a') } : { body: { items: [video('a', 'PT10S')] } })
+    const provider = createYouTubeProvider({ apiKey: () => key, fetch: f.fn, storage: memoryStorage(), now: () => 0 })
+    await expect(provider.load({ kind: 'search', query: 'q' })).rejects.toThrow(/API key/)
+    // When the user saves a key
+    key = 'LATE'
+    // Then the next load uses it
+    await provider.load({ kind: 'search', query: 'q' })
+    expect(f.calls[0].searchParams.get('key')).toBe('LATE')
+  })
+})
