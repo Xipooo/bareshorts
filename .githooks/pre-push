@@ -1,0 +1,3 @@
+#!/bin/sh
+# CI is blocked by GitHub billing; gate pushes on a full local verify (tests + typecheck + build).
+npm run verify
