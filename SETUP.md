@@ -4,7 +4,7 @@ Not board work. Do these when the stories that need them reach Ready. Each is ph
 
 ## GitHub
 - [x] Repo `Xipooo/bareshorts` created.
-- [ ] CI workflow file: needs the `workflow` token scope. Run `gh auth refresh -h github.com -s workflow` on the laptop (approve the one-time code at https://github.com/login/device), then push `.github/workflows/ci.yml`.
+- [ ] CI workflow file: needs the `workflow` token scope. Run `gh auth refresh -h github.com -s workflow` on the laptop (approve the one-time code at https://github.com/login/device), then merge the local-only branch `ci-local` (it holds `.github/workflows/ci.yml`) into `main` and push.
 - [ ] GitHub Actions billing: Actions failed to start on another repo with "recent account payments have failed". If CI here also won't start, Settings -> Billing & plans -> fix payment or spending limit. Until then the pre-push hook (`npm test`) is the gate.
 
 ## Hosting (when the first slice is ready to watch)
